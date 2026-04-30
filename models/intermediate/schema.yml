@@ -1,0 +1,100 @@
+version: 2
+
+models:
+  - name: int_orders_with_customers
+    description: "Orders joined with customer details — one row per order"
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order"
+        tests:
+          - not_null
+          - unique
+      - name: order_status
+        description: "Current status of the order"
+      - name: order_purchase_timestamp
+        description: "Timestamp when the order was placed"
+      - name: order_approved_at
+        description: "Timestamp when the payment was approved"
+      - name: order_delivered_carrier_date
+        description: "Timestamp when the order was handed to the carrier"
+      - name: order_delivered_customer_date
+        description: "Timestamp when the customer received the order"
+      - name: order_estimated_delivery_date
+        description: "Estimated delivery date shown to the customer at purchase time"
+      - name: customer_id
+        description: "Surrogate key linking a customer to this specific order"
+        tests:
+          - not_null
+      - name: customer_unique_id
+        description: "True unique identifier for the customer across all orders"
+      - name: customer_city
+        description: "City of the customer"
+      - name: customer_state
+        description: "State of the customer"
+
+  - name: int_orders_with_payments
+    description: "Aggregated payment info per order — one row per order"
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order"
+        tests:
+          - not_null
+          - unique
+      - name: total_payment_value
+        description: "Total amount paid across all payment methods for the order"
+      - name: payment_count
+        description: "Number of payment methods used for the order"
+      - name: max_installments
+        description: "Maximum number of installments across all payment methods"
+      - name: payment_type
+        description: "Primary payment method used (MAX when multiple exist)"
+
+  - name: int_orders_with_reviews
+    description: "Order reviews cleaned and joined — one row per review (orders may have multiple)"
+    columns:
+      - name: order_id
+        description: "Foreign key to stg_orders"
+        tests:
+          - not_null
+      - name: review_id
+        description: "Unique identifier for the review"
+      - name: review_score
+        description: "Customer satisfaction score from 1 (worst) to 5 (best)"
+      - name: review_comment_title
+        description: "Title of the customer review comment"
+      - name: review_comment_message
+        description: "Body of the customer review comment"
+      - name: review_creation_date
+        description: "Date the review survey was sent to the customer"
+      - name: review_answer_timestamp
+        description: "Timestamp when the customer submitted the review"
+
+  - name: int_order_items_with_products
+    description: "Order items joined with product details — one row per order item"
+    columns:
+      - name: order_id
+        description: "Foreign key to stg_orders"
+        tests:
+          - not_null
+      - name: order_item_id
+        description: "Sequential item number within the order"
+      - name: seller_id
+        description: "Foreign key to stg_sellers"
+      - name: price
+        description: "Item price in BRL"
+      - name: freight_value
+        description: "Freight cost for this item in BRL"
+      - name: total_item_value
+        description: "price + freight_value"
+      - name: product_id
+        description: "Foreign key to stg_products"
+      - name: product_category_name
+        description: "Product category in Portuguese"
+      - name: product_weight_g
+        description: "Product weight in grams"
+      - name: product_length_cm
+        description: "Product length in centimeters"
+      - name: product_height_cm
+        description: "Product height in centimeters"
+      - name: product_width_cm
+        description: "Product width in centimeters"

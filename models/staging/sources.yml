@@ -1,0 +1,113 @@
+version: 2
+
+sources:
+  - name: raw
+    database: ecommerce_dev
+    schema: raw
+    tables:
+      - name: orders
+        description: "Raw orders data from Olist"
+        config:
+          loaded_at_field: order_purchase_timestamp
+          freshness:
+            warn_after: {count: 7, period: day}
+            error_after: {count: 30, period: day}
+        columns:
+          - name: order_id
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            tests:
+              - not_null
+          - name: order_status
+            tests:
+              - not_null
+
+      - name: customers
+        description: "Raw customers data from Olist"
+        columns:
+          - name: customer_id
+            tests:
+              - unique
+              - not_null
+          - name: customer_unique_id
+            tests:
+              - not_null
+
+      - name: order_items
+        description: "Raw order items data from Olist"
+        config:
+          loaded_at_field: shipping_limit_date
+          freshness:
+            warn_after: {count: 7, period: day}
+            error_after: {count: 30, period: day}
+        columns:
+          - name: order_id
+            tests:
+              - not_null
+          - name: order_item_id
+            tests:
+              - not_null
+          - name: product_id
+            tests:
+              - not_null
+          - name: seller_id
+            tests:
+              - not_null
+
+      - name: order_payments
+        description: "Raw order payments data from Olist"
+        columns:
+          - name: order_id
+            tests:
+              - not_null
+          - name: payment_sequential
+            tests:
+              - not_null
+
+      - name: order_reviews
+        description: "Raw order reviews data from Olist"
+        config:
+          loaded_at_field: review_creation_date
+          freshness:
+            warn_after: {count: 7, period: day}
+            error_after: {count: 30, period: day}
+        columns:
+          - name: review_id
+            tests:
+              - not_null
+          - name: order_id
+            tests:
+              - not_null
+
+      - name: products
+        description: "Raw products data from Olist"
+        columns:
+          - name: product_id
+            tests:
+              - unique
+              - not_null
+
+      - name: sellers
+        description: "Raw sellers data from Olist"
+        columns:
+          - name: seller_id
+            tests:
+              - unique
+              - not_null
+
+      - name: geolocation
+        description: "Raw geolocation data from Olist"
+        columns:
+          - name: geolocation_zip_code_prefix
+            tests:
+              - not_null
+
+      - name: product_category_name_translation
+        description: "Product category name translations from Portuguese to English"
+        columns:
+          - name: product_category_name
+            tests:
+              - unique
+              - not_null

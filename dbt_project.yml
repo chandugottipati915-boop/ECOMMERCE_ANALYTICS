@@ -1,0 +1,58 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'ecommerce_analytics'
+version: '1.0.0'
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'ecommerce_analytics'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
+vars:
+  # Customer segmentation thresholds (order count)
+  champion_order_threshold: 5
+  loyal_order_threshold: 3
+  returning_order_threshold: 2
+  # Customer LTV segmentation thresholds (BRL)
+  high_ltv_threshold: 1000
+  mid_ltv_threshold: 300
+  # Seller tier thresholds (BRL)
+  platinum_revenue_threshold: 50000
+  gold_revenue_threshold: 20000
+  silver_revenue_threshold: 5000
+
+models:
+  ecommerce_analytics:
+    staging:
+      +schema: staging
+      +materialized: view
+      +tags: ['staging']
+    intermediate:
+      +schema: intermediate
+      +materialized: view
+      +tags: ['intermediate']
+    marts:
+      +schema: marts
+      +materialized: table
+      +tags: ['marts']
